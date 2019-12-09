@@ -1,0 +1,100 @@
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Scanner;
+
+
+public class Calender {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        while (true){
+            System.out.println("请输入年份：");
+            int year = scanner.nextInt();
+            System.out.println("请输入月份：");
+            int month = scanner.nextInt();
+            System.out.println("请输入日期：");
+            int day = scanner.nextInt();
+
+            //Calendar抽象类，使用getInstance获取对象
+            Calendar calendar = Calendar.getInstance();
+            //设置年
+            calendar.set(Calendar.YEAR,year);
+            //设置月
+            calendar.set(Calendar.MONTH,month-1);
+            //得到本月有几天
+            calendar.set(Calendar.DATE,1);
+            //roll -1先设置当前是本月的第一天，得到本月最后一天
+            calendar.roll(Calendar.DATE,-1);
+            int ofDay = calendar.get(Calendar.DATE);
+
+            //得到第一天是周几
+            calendar.set(Calendar.DATE,1);
+            int printDay = calendar.get(Calendar.DAY_OF_WEEK);
+
+            System.out.println();
+            System.out.print("当前日历:"+year+"-"+month+"-"+day+"\t");
+
+            //EEEE代表星期
+            Calendar c = Calendar.getInstance();
+            c.set(year,month-1,day);
+            Date d = new Date(c.getTimeInMillis());
+            SimpleDateFormat dateFm1 = new SimpleDateFormat("EEEE");
+            String ofWeek1 = dateFm1.format(d);
+            System.out.print(ofWeek1+"\t");
+
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            String today = sdf.format(new Date());
+            System.out.print("返回今天:"+today+"\t");
+
+            //EEEE代表星期
+            SimpleDateFormat dateFm = new SimpleDateFormat("EEEE");
+            String ofWeek = dateFm.format(new Date());
+            System.out.print(ofWeek);
+            System.out.println();
+
+
+            System.out.println("周日\t周一\t周二\t周三\t周四\t周五\t周六");
+            for(int i=0;i<printDay-1;i++){
+                System.out.print("\t");
+            }
+
+            for(int i=1;i<=ofDay;i++){
+                if(i == day){
+                    System.out.print(i+"*\t");
+                    if((i+printDay-1)%7 == 0){
+                        System.out.println();
+                    }
+                }else{
+                    System.out.print(i+"\t");
+                    if((i+printDay-1)%7 == 0){
+                        System.out.println();
+                    }
+                }
+            }
+
+            System.out.println();
+
+            System.out.println("周一\t周二\t周三\t周四\t周五\t周六\t周日");
+            int tmp = printDay-2 == -1?6:printDay-2;
+            for(int i=0;i<tmp;i++){
+                System.out.print("\t");
+            }
+
+            for(int i=1;i<=ofDay;i++){
+                if(i == day){
+                    System.out.print(i+"*\t");
+                    if((i+printDay-2)%7 == 0){
+                        System.out.println();
+                    }
+                }else{
+                    System.out.print(i+"\t");
+                    if((i+printDay-2)%7 == 0){
+                        System.out.println();
+                    }
+                }
+            }
+            System.out.println();
+            System.out.println();
+        }
+    }
+}
