@@ -1,0 +1,57 @@
+import java.math.BigDecimal;
+import java.util.Scanner;
+
+public class RedEnvelopes {
+    public static void main(String[] args) {
+        Double minMoney = 0.01;
+        Scanner scanner = new Scanner(System.in);
+
+        while (true){
+            System.out.println("请输入发放金额：");
+            Double redMoney = scanner.nextDouble();
+            System.out.println("请输入红包个数：");
+            Integer redNum = scanner.nextInt();
+            redMoney = sub(redMoney,mul(redNum,minMoney));
+
+            for(int i=0;i<redNum;i++){
+                if(redNum == 1){
+                    System.out.println(add(redMoney,minMoney));
+                }else{
+                    double money = Math.random()*redMoney;
+                    BigDecimal bdf = new BigDecimal(money);
+                    money = bdf.setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
+                    redMoney = sub(redMoney,money);
+                    if(i == redNum-1){
+                        System.out.println("最后一个红包："+add(minMoney,add(money,redMoney)));
+                    }else{
+                        System.out.println("第"+(i+1)+"个红包："+add(money,minMoney));
+                    }
+                }
+            }
+        }
+    }
+
+    public static double add(double v1, double v2) {
+        BigDecimal b1 = new BigDecimal(Double.toString(v1));
+        BigDecimal b2 = new BigDecimal(Double.toString(v2));
+        BigDecimal b3 = b1.add(b2);
+        Double b4 = b3.doubleValue();
+        return b4;
+    }
+
+    public static double sub(double v1, double v2) {
+        BigDecimal b1 = new BigDecimal(Double.toString(v1));
+        BigDecimal b2 = new BigDecimal(Double.toString(v2));
+        BigDecimal b3 = b1.subtract(b2);
+        Double b4 = b3.doubleValue();
+        return b4;
+    }
+
+    public static double mul(double v1, double v2) {
+        BigDecimal b1 = new BigDecimal(Double.toString(v1));
+        BigDecimal b2 = new BigDecimal(Double.toString(v2));
+        BigDecimal b3 = b1.multiply(b2);
+        Double b4 = b3.doubleValue();
+        return b4;
+    }
+}
