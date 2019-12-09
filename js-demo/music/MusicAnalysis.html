@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>音乐解析</title>
+</head>
+<style>
+    #text {
+        width: 500px;
+        height: 500px;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+</style>
+<body>
+    <h3>爱的奉献</h3>
+    <div id="text"></div>
+
+    <audio controls="controls" loop="loop" id="audio">
+        <source src="爱的奉献.mp3"/>
+    </audio>
+
+    <script>
+            let text='[00:13.598]这是心的呼唤\n'+
+                      '[00:19.460]这是爱的奉献\n'+
+                      '[00:25.599]这是人间的春风\n'+
+                      '[00:30.599]这是生命的源泉\n'+
+                      '[00:37.448]在没有心的沙漠\n'+
+                      '[00:43.390]在没有爱的荒原\n'+
+                      '[00:49.269]死神也望而却步\n'+
+                      '[00:54.436]幸福之花处处开遍\n'+
+                      '[01:02.289]啊......\n'+
+                      '[01:06.410]只要人人都献出一点爱\n'+
+                      '[01:11.180]世界将变成美好的人间\n'+
+                      '[01:16.990]啊.......\n'+
+                      '[01:21.149]只要人人都献出一点爱\n'+
+                      '[01:25.829]世界将变成美好的人间\n'+
+                      '[01:44.547]这是心的呼唤\n'+
+                      '[01:50.690]这是爱的奉献\n'+
+                      '[01:56.500]这是人间的春风\n'+
+                      '[02:01.500]这是生命的源泉\n'+
+                      '[02:08.199]在没有心的沙漠\n'+
+                      '[02:14.500]在没有爱的荒原\n'+
+                      '[02:20.990]死神也望而却步\n'+
+                      '[02:25.130]幸福之花处处开遍\n'+
+                      '[02:33.129]啊......\n'+
+                      '[02:37.700]只要人人都献出一点爱\n'+
+                      '[02:42.299]世界将变成美好的人间\n'+
+                      '[02:48.198]啊.......\n'+
+                      '[02:52.439]只要人人都献出一点爱\n'+
+                      '[02:57.0]世界将变成美好的人间\n'+
+                      '[03:04.800]啊.......';
+
+            function fun(temp) {
+              let lines = temp.split('\n');
+              let pattern = /\[\d{2}:\d{2}.\d{3}\]/g;
+              let result = [];
+              lines.forEach(line => {
+                  let index = line.indexOf("]");
+                  let time = line.substring(0,index+1);
+                  let lyric = line.substring(index+1);
+
+                  let timeString = time.substring(1,time.length-2);
+                  let timeArr = timeString.split(":");
+                  result.push([parseInt(timeArr[0],10) * 60 + parseFloat(timeArr[1]),lyric]);
+              })
+              result.sort((a ,b)=>a[0]-b[0]);
+              return result;
+            }
+
+            function ofLyric(lyric) {
+              lyric.forEach((c)=>{
+                  let p = document.createElement('p');
+                  p.className = 'lyric';
+                  p.innerHTML = c[1];
+                  ofContent.append(p);
+              })
+            }
+
+            text = fun(text);
+            let ofContent = document.getElementById('text');
+            ofLyric(text);
+            let audio = document.getElementById('audio');
+
+           audio.ontimeupdate=function(e){
+              let lyric = document.getElementsByClassName('lyric');
+              for(let i = 0; i < text.length; i++) {
+                if (this.currentTime >text[i][0]){
+                    for(let j = 0; j < text.length; j++) {
+                      lyric[j].style.color = 'gray';
+                      ofContent.scrollTop = 0;
+                    }
+                    
+                    ofContent.scrollTop = lyric[i].offsetTop - 60;
+                    lyric[i].style.color = 'red';
+                }
+              }
+            }
+    </script>
+</body>
+</html>
