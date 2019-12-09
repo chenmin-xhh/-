@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>地址四级联动</title>
+    <!--  引入vue和axios -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+
+<body>
+    <div id="addr">
+        <h3>行政区级联选择</h3>
+        省市区：<select @change="provinceChange">
+            <option v-for="p in provinces">{{p}}</option>
+        </select>
+        地级市：<select @change="cityChange">
+            <option v-for="c in cities">{{c}}</option>
+        </select>
+        区县：<select @change="districtChange">
+            <option v-for="d in districts">{{d}}</option>
+        </select>
+        街道：<select @change="streetChange">
+            <option v-for="s in streets">{{s}}</option>
+        </select>
+    </div>
+    <script>
+     axios.defaults.baseURL = "https://restapi.amap.com/v3/config";
+     new Vue({
+         el:"#addr",
+         data:{
+             provinces:['请选择'],
+             cities:[],
+             districts:[],
+             streets:[],
+             addr:{
+                province:'',
+                 city:'',
+                 district:'',
+                 street:''
+             },
+             key:'?key=申请的key'
+         },
+         created(){
+            this.init();
+         },
+         methods: {
+             init:function(){
+                 axios.get("/district"+this.key).then(res => {
+                     let data = res.data.districts[0].districts;
+                     this.provinces = ['请选择'];
+                     data.forEach(element => {
+                         this.provinces.push(element.name);
+                     });
+                 });
+             },
+             provinceChange:function(e){
+                let provinceName = e.target.value;
+                this.addr={
+                    province:provinceName
+                };
+                this.cities = [];
+                this.districts = [];
+                this.streets = [];
+                axios.get("/district"+this.key+"&keywords="+provinceName).then(res=>{
+                    let data = res.data.districts[0].districts;
+                    data.forEach(element=>{
+                        this.cities.push(element.name);
+                    })
+                })
+             },
+             cityChange:function(e){
+                let cityName = e.target.value;
+                this.addr={
+                    province:this.addr.province,
+                    city:cityName
+                };
+                this.districts = [];
+                this.streets = [];
+                axios.get("/district"+this.key+"&keywords="+cityName).then(res=>{
+                    let data = res.data.districts[0].districts;
+                    data.forEach(element=>{
+                        this.districts.push(element.name);
+                    })
+                })
+             },
+             districtChange:function(e){
+                let districtName = e.target.value;
+                this.streets = [];
+                this.addr={
+                    province:this.addr.province,
+                    city:this.addr.city,
+                    district:districtName
+                };
+                axios.get("/district"+this.key+"&keywords="+districtName).then(res=>{
+                    let data = res.data.districts[0].districts;
+                    data.forEach(element=>{
+                        this.streets.push(element.name);
+                    })
+                })
+             },
+             streetChange(e){
+                let streetName = e.target.value;
+                this.addr.street = streetName;
+                alert("地址："+this.addr.province+this.addr.city+this.addr.district+this.addr.street)
+             }
+         },
+     })
+    </script>
+</body>
+
+</html>
