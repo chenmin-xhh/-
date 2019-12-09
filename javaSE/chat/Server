@@ -1,0 +1,96 @@
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class Server {
+    public static void main(String[] args) throws IOException {
+        new Server().init();
+    }
+    private List<Socket> clients = new ArrayList<>();
+
+    public void init() throws IOException{
+        ServerSocket serverSocket = new ServerSocket(端口);
+        System.out.println("服务器启动:" + serverSocket);
+
+        while (true) {
+            Socket client = serverSocket.accept();
+            clients.add(client);
+            String name = client.getInetAddress().getHostAddress() + ":" + client.getPort();
+            broadcast(name+": 上线了");
+            new Thread() {
+                public void run() {
+                    try {
+                        System.out.println("客户端进来了");
+                        InputStream is = client.getInputStream();
+                        byte[] bytes = new byte[1024];
+                        int lenght = -1;
+                        while ((lenght = is.read(bytes)) != -1) {
+                            String msg = new String(bytes, 0, lenght);
+                            System.out.println(msg);
+
+                            Pattern compile = Pattern.compile("^@([0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}):([0-9]+)\\s+(.*)$");
+                            Matcher matcher = compile.matcher(msg);
+                            if(matcher.find()){ // 私聊
+                                String ip = matcher.group(1);
+                                String port = matcher.group(2);
+                                Socket tmp = null;
+                                for (Socket socket : clients) {
+                                    if(socket.getInetAddress().getHostAddress().equals(ip) && port.equals(String.valueOf(socket.getPort()))){
+                                        try {
+                                            msg = "私发消息 "+msg;
+                                            OutputStream os = socket.getOutputStream();
+                                            os.write(msg.getBytes("UTF-8"));
+                                            tmp = socket;
+                                        } catch (Exception e) {
+                                            String temp = socket.getInetAddress().getHostAddress() + ":" + socket.getPort()+": 下线了";
+                                            broadcast(temp);
+                                            clients.remove(socket);
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                                if(tmp == null){
+                                    msg = "发送失败";
+                                    OutputStream outputStream = client.getOutputStream();
+                                    outputStream.write(msg.getBytes("UTF-8"));
+                                }else{
+                                    msg = "发送成功";
+                                    OutputStream outputStream = client.getOutputStream();
+                                    outputStream.write(msg.getBytes("UTF-8"));
+                                }
+                            }else{
+                                String name = client.getInetAddress().getHostAddress() + ":" + client.getPort();
+                                msg = name + "\n" + "群聊消息 "+ msg;
+                                broadcast(msg);
+                            }
+                        }
+                    } catch (Exception e) {
+                        String msg = client.getInetAddress().getHostAddress() + ":" + client.getPort()+": 下线了";
+                        broadcast(msg);
+                        clients.remove(client);
+                    }
+                }
+            }.start();
+        }
+    }
+
+    public void broadcast(String msg) {
+        Iterator<Socket> iterator = clients.iterator();
+        while (iterator.hasNext()) {
+            Socket next = iterator.next();
+            try {
+                OutputStream os = next.getOutputStream();
+                os.write(msg.getBytes("UTF-8"));
+            } catch (Exception e) {
+                iterator.remove();
+            }
+        }
+    }
+}
