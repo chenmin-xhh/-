@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script src="http://code.jquery.com/jquery-1.8.0.min.js" type="text/javascript" charset="utf-8"></script>
+		<style type="text/css">
+			#frame{
+				/*border: solid 1px red;*/
+				perspective: 80000px;/*在画框上设置透视*/
+				position: absolute;
+				top: 30%;
+				left: 40%;
+			}
+			#frame .canvas{
+				transform: translate(50%,50%);/*实现垂直水平均居中*/
+				margin: auto;
+				width: 200px;
+				height: 200px;
+				transform-style: preserve-3d;/*让子元素保留3d效果*/
+				animation: canvas 20s linear 0s infinite;    /*调用3d旋转,旋转时间的快慢，线性的,隔秒开始,是否无限*/
+			}
+			#frame .canvas .default{
+				position: absolute;
+				width: 100%;
+				height:100%;
+				border: solid 0px black;
+			}
+			img{
+				width: 100%;
+				height: 100%;
+			}
+			/*@keyframes canvas{
+		        from{
+		            transform: rotate(0);
+		        }
+		        to{
+		            transform: rotateY(360deg);
+		        }
+		    }*/
+		    
+		    /* 中间的六面盒子的动画效果 */
+		     @keyframes canvas{
+		        from{
+		            transform: rotate3d(0,0,0,0);
+		        }
+		        to{
+		            transform: rotate3d(1,1,-1,360deg);
+		        }
+		    }
+		    
+		    /*中间的六面的角度*/
+		    #frame .canvas .top{
+				transform: rotateX(90deg) translateZ(100px);
+			}
+			#frame .canvas .bottom{
+				transform: rotateX(-90deg) translateZ(100px);
+			}
+			#frame .canvas .left{
+				transform: rotateY(-90deg) translateZ(100px);
+			}
+			#frame .canvas .right{
+				transform: rotateY(90deg) translateZ(100px);
+			}
+			#frame .canvas .behind{
+				transform: rotateY(180deg) translateZ(100px);
+			}
+			#frame .canvas .front{
+				transform: translateZ(100px);
+			}
+			#frame .canvas .li{
+				transform: translateZ(0px);
+			}
+			#frame .canvas .li2{
+				transform:rotateY(90deg)  translateZ(0px);
+			}
+			#frame .canvas .li3{
+				transform:rotateX(90deg)  translateZ(0px);
+			}
+		  
+			/* //鼠标移动后的效果 */
+			#frame .canvas:hover .top{
+				animation: top 3s 0s forwards;
+			}
+			#frame .canvas:hover .bottom{
+				animation: bottom 3s 0s forwards;
+			}
+			#frame .canvas:hover .left{
+				animation: left 3s 0s forwards;
+			}
+			#frame .canvas:hover .right{
+				animation: right 3s 0s forwards;
+			}
+			#frame .canvas:hover .behind{
+				animation: behind 3s 0s forwards;
+			}
+			#frame .canvas:hover .front{
+				animation: front 3s 0s forwards;
+			}
+			/*动画效果*/
+			@keyframes top{
+				from{
+					transform: rotateX(90deg);
+				}
+				to{
+					transform: rotateX(90deg) translateZ(200px);
+				}
+			}
+			@keyframes bottom{
+				from{
+					transform: rotateX(-90deg);
+				}
+				to{
+					transform: rotateX(-90deg) translateZ(200px);
+				}
+			}
+			@keyframes left{
+				from{
+					transform: rotateY(-90deg);
+				}
+				to{
+					transform: rotateY(-90deg) translateZ(200px);
+				}
+			}
+			@keyframes right{
+				from{
+					transform: rotateY(90deg);
+				}
+				to{
+					transform: rotateY(90deg) translateZ(200px);
+				}
+			}
+			@keyframes behind{
+				from{
+					transform: rotateY(-180deg);
+				}
+				to{
+					transform: rotateY(-180deg) translateZ(200px);
+				}
+			}
+			@keyframes front{
+				from{
+					transform: rotateY(150px);
+				}
+				to{
+					transform: translateZ(200px);
+				}
+			}
+		    /*第二条外部圆*/
+		   #frame .canvas2{
+		   		position: absolute;
+				transform: translate(50%,50%);/*实现垂直水平均居中*/
+				margin: auto;
+				width: 200px;
+				height: 200px;
+				transform-style: preserve-3d;/*让子元素保留3d效果*/
+				animation: canvas2 20s linear 0s infinite;    /*调用3d旋转,旋转时间的快慢，线性的,隔秒开始,是否无限*/
+			}
+			#frame .canvas2 .default{
+				position: absolute;
+				width: 100%;
+				height:100%;
+				border: solid 0px black;
+			}
+			img{
+				width: 100%;
+				height: 100%;
+			}
+			@keyframes canvas2{
+				from{
+					transform: rotate3d(0,0,0,0);
+				}
+				to{
+					transform: rotate3d(1,1,1,360deg);
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<div id="frame">
+			<!-- 中间的六面盒子 -->
+			<div class="canvas">
+				<div class="default top"><img src="http://cnd.yinglingxuan.cn/12.jpg"/></div>
+				<div class="default bottom"><img src="http://cnd.yinglingxuan.cn/12.jpg"/></div>
+				<div class="default left"><img src="http://cnd.yinglingxuan.cn/12.jpg"/></div>
+				<div class="default right"><img src="http://cnd.yinglingxuan.cn/12.jpg"/></div>
+				<div class="default behind"><img src="http://cnd.yinglingxuan.cn/12.jpg"/></div>  
+				<div class="default front"><img src="http://cnd.yinglingxuan.cn/12.jpg"/></div>	  
+				
+				<!-- 盒子中的三张图片 -->
+				<div class="default li"><img src="http://cnd.yinglingxuan.cn/12.jpg"/></div>	 
+				<div class="default li2"><img src="http://cnd.yinglingxuan.cn/12.jpg"/></div>
+				<div class="default li3"><img src="http://cnd.yinglingxuan.cn/12.jpg"/></div>
+				
+				<div class="canvas2">
+					
+				</div>
+			</div>
+			
+			
+		</div>
+		
+		<script type="text/javascript">
+			//外圈的图片数组
+			var arr=["http://cnd.yinglingxuan.cn/12.jpg","http://cnd.yinglingxuan.cn/12.jpg","http://cnd.yinglingxuan.cn/12.jpg","http://cnd.yinglingxuan.cn/12.jpg","http://cnd.yinglingxuan.cn/12.jpg","http://cnd.yinglingxuan.cn/12.jpg","http://cnd.yinglingxuan.cn/12.jpg","http://cnd.yinglingxuan.cn/12.jpg","http://cnd.yinglingxuan.cn/12.jpg","http://cnd.yinglingxuan.cn/12.jpg","http://cnd.yinglingxuan.cn/12.jpg","http://cnd.yinglingxuan.cn/12.jpg","http://cnd.yinglingxuan.cn/12.jpg","http://cnd.yinglingxuan.cn/12.jpg","http://cnd.yinglingxuan.cn/12.jpg","http://cnd.yinglingxuan.cn/12.jpg"];
+			var deg=360;   //总度数
+			/*分别的度数*/
+			var deglen=360/arr.length;     //分配出数组中每张图片对应的度数
+			var distance =35*arr.length ; //每张图片的距离
+			
+			for (var i=0;i<arr.length;i++) {
+				$("#frame .canvas").append("<div class='default img_"+i+"'><img src='"+arr[i]+"'/></div>");
+				var width=$("#frame .canvas .default").width();
+				if(width<200&&width>=150){
+					 distance =(30*arr.length)-40 ;
+				}else if(width<150&&width>=100){
+					distance =(20*arr.length)-20 ;
+				}else if(width<100){
+					distance =(10*arr.length)-10 ;
+				}
+				$("#frame .canvas .img_"+i+"").css({"transform":"rotateY("+deg+"deg) translateZ("+distance+"px)"});
+				deg=deg-deglen;
+			};
+			/*var count=30;
+			 setInterval(function(){
+			        $("#frame .canvas").css("transform","rotateY("+count+"deg)");
+				count=count+30;
+			    },3000);//切换时间*/
+			
+			
+			//第二个外圈, 一样的代码
+			var deg2=360;   //总度数
+			/*分别的度数*/
+			var deglen2=360/arr.length;   
+			var distance2 =35*arr.length ; //距离
+			
+			for (var i=0;i<arr.length;i++) {
+				$("#frame .canvas2").append("<div class='default img_"+i+"'><img src='"+arr[i]+"'/></div>");
+				var width2=$("#frame .canvas2 .default").width();
+				if(width2<200&&width2>=150){
+					 distance2 =(30*arr.length)-40 ;
+				}else if(width2<150&&width2>=100){
+					distance2 =(20*arr.length)-20 ;
+				}else if(width2<100){
+					distance2 =(10*arr.length)-10 ;
+				}
+				$("#frame .canvas2 .img_"+i+"").css({"transform":"rotateY("+deg2+"deg) translateZ("+distance2+"px)"});
+				deg2=deg2-deglen2;
+			};
+		</script>
+	</body>
+</html>

@@ -1,0 +1,96 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>canvas画板</title>
+  <style type="text/css">
+    #myCanvas {
+      border: 1px solid #ccc;
+	  background-color: #000000;
+    }
+    .canvasBox {
+      width: 2000px;
+      margin: 0 auto;
+      text-align: center;
+    }
+	.tool{
+		width: 2000px;
+		margin: 0 auto;
+		display: flex;
+		line-height: 60px;
+	}
+	.tool div{
+		margin: 0 30px;
+		width: 200px;
+		text-align: center;
+		border: solid 1px #000000;
+	}
+	#colors{
+		width: 100px;
+		height: 50px;
+	}
+  </style>
+</head>
+<body>
+  <!-- 画布容器 -->
+  <div class="canvasBox">
+    <canvas id="myCanvas" height="1500" width="2000"></canvas>
+  </div>
+  <!-- 颜色盘 -->
+  <div class="tool">
+	  <div class="color">
+		  <input type="color" id="colors" value="#ffffff" oninput="getColors()"/>
+	  </div>
+	  <div>画笔大小:</div>
+	  <div>
+		  <input type="range" id="ranges" value="1"  oninput="getRange()"/>
+	  </div>
+	  <div onclick="clears()">点击清除</div>
+	  <div onclick="down()">下载</div>
+  </div>
+  
+  <script type="text/javascript">
+    var canvas = document.getElementById('myCanvas');  //获取canvas 容器
+    var ctx = myCanvas.getContext('2d');   // 绑定canvas 容器 获取画布操作方法
+	ctx.strokeStyle="#ffffff";
+	ctx.fillRect(0, 0,2000, 1500);
+	canvas.onmousedown = function (e){   //绑定在canvas中的点击事件
+		//当前点击的开始下标
+		let x = e.offsetX;
+		let y = e.offsetY;
+		ctx.beginPath();  //开始绘制
+		canvas.onmousemove = function(e2){ //监听鼠标移动的位置
+			ctx.moveTo(x,y);  //开始的位置
+			x = e2.offsetX;   //移动的位置的坐标
+			y = e2.offsetY;
+			ctx.lineTo(x,y);  //线的位置
+			ctx.closePath();   //创建从当前点回到起始点的路径
+			ctx.stroke();//绘制已定义的路径
+		}
+		canvas.onmouseup  = function(e){  //按键松开
+			canvas.onmousemove = null;      //取消鼠标移动
+		}
+	}
+	
+	function getColors(){
+		ctx.strokeStyle=document.getElementById("colors").value;
+	}
+	function getRange(){
+		ctx.lineWidth=document.getElementById("ranges").value;
+		
+	}
+	function clears(){
+		ctx.clearRect(0,0,2000,1500);
+		ctx.fillRect(0, 0,2000, 1500);
+	} 
+	function down(){
+		var a = document.createElement('a');
+		a.href = canvas.toDataURL('image/png'); //下载图片
+		a.download = 'canvas.png';
+		a.click();
+	}
+	
+	
+  </script>
+</body>
